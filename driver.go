@@ -1,4 +1,4 @@
-package driver
+package gocache
 
 //Driver 缓存驱动
 type Driver interface {

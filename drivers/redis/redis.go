@@ -8,7 +8,6 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/jiazhoulvke/gocache"
-	"github.com/jiazhoulvke/gocache/driver"
 	json "github.com/json-iterator/go"
 )
 
@@ -67,7 +66,7 @@ func (d *Driver) Close() error {
 }
 
 //Store 返回一个存储器
-func (d *Driver) Store(storeName string) driver.Storer {
+func (d *Driver) Store(storeName string) gocache.Storer {
 	store := &Store{
 		Name:   storeName,
 		Prefix: gocache.StorePrefix + storeName + gocache.StoreSuffix,

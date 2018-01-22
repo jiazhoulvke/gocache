@@ -2,12 +2,10 @@ package gocache
 
 import (
 	"fmt"
-
-	"github.com/jiazhoulvke/gocache/driver"
 )
 
 var (
-	_driver driver.Driver
+	_driver Driver
 	//StorePrefix 存储空间前缀
 	StorePrefix = ""
 	//StoreSuffix 存储空间后缀
@@ -26,7 +24,7 @@ var (
 )
 
 //Register 注册驱动
-func Register(name string, mydriver driver.Driver) {
+func Register(name string, mydriver Driver) {
 	if name == "" {
 		panic("name is null")
 	}
@@ -51,7 +49,7 @@ func Close() error {
 }
 
 //Store 返回一个存储器
-func Store(storeName string) (storer driver.Storer) {
+func Store(storeName string) (storer Storer) {
 	if _driver == nil {
 		panic("driver is nil")
 	}
