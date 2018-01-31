@@ -37,9 +37,6 @@ func Register(name string, mydriver Driver) {
 
 //Open 开启存储器
 func Open(options interface{}) error {
-	if options == nil {
-		panic("driver does not init")
-	}
 	return _driver.Open(options)
 }
 

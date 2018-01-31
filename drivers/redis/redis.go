@@ -34,6 +34,9 @@ type Options struct {
 
 //Open 打开连接
 func (d *Driver) Open(options interface{}) error {
+	if options == nil {
+		return fmt.Errorf("options is nil")
+	}
 	opts, ok := options.(Options)
 	if !ok {
 		return ErrOptionsFormat
