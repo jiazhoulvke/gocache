@@ -52,3 +52,8 @@ func Store(storeName string) (storer Storer) {
 	}
 	return _driver.Store(storeName)
 }
+
+//DefaultStore 返回一个默认存储器
+func DefaultStore() (storer Storer) {
+	return Store("DEFAULT")
+}
