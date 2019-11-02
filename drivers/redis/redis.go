@@ -44,12 +44,13 @@ func (d *Driver) Open(options interface{}) error {
 	if opts.IdleTimeout == 0 {
 		opts.IdleTimeout = 1
 	}
+	address := fmt.Sprintf("%s:%d", opts.Host, opts.Port)
 	d.pool = &redis.Pool{
 		MaxIdle:     runtime.NumCPU(),
 		IdleTimeout: time.Duration(opts.IdleTimeout) * time.Second,
 		Dial: func() (redis.Conn, error) {
 			var c redis.Conn
-			c, err := redis.Dial("tcp", fmt.Sprintf("%s:%d", opts.Host, opts.Port))
+			c, err := redis.Dial("tcp", address)
 			return c, err
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
@@ -93,6 +94,7 @@ func (s *Store) Key(key string) string {
 //Delete 删除键值对
 func (s *Store) Delete(key string) error {
 	c := s.driver.pool.Get()
+	defer c.Close()
 	_, err := c.Do("DEL", s.Key(key))
 	return err
 }
@@ -100,6 +102,7 @@ func (s *Store) Delete(key string) error {
 //Get 获取值
 func (s *Store) Get(key string, obj interface{}) error {
 	c := s.driver.pool.Get()
+	defer c.Close()
 	reply, err := c.Do("GET", s.Key(key))
 	if err != nil {
 		return err
@@ -116,6 +119,7 @@ func (s *Store) Get(key string, obj interface{}) error {
 //GetDefault 获取值，如果不存在则存储默认值
 func (s *Store) GetDefault(key string, obj interface{}, defaultValue interface{}) error {
 	c := s.driver.pool.Get()
+	defer c.Close()
 	reply, err := c.Do("GET", s.Key(key))
 	if err != nil || reply == nil {
 		err = s.Set(key, defaultValue)
@@ -143,6 +147,7 @@ func (s *Store) Set(key string, value interface{}) error {
 //Remember 存储值，超时后自动删除
 func (s *Store) Remember(key string, value interface{}, expireTime int) error {
 	c := s.driver.pool.Get()
+	defer c.Close()
 	bs, err := json.Marshal(value)
 	if err != nil {
 		return err
